@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>菜谱</title>
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+
+    <!-- We're using a style block to make it easy to view the custom styles -->
+    <!-- In production, these should be added to a custom.css file loaded in the head -->
+    <style>
+        /* Basic styles */
+        .ui-overlay-a, .ui-page-theme-a, .ui-page-theme-a .ui-panel-wrapper {
+            background: #ffffff;
+        }
+
+        .rwd-example .ui-body {
+            text-align: left;
+            border-color: #ddd;
+        }
+
+        .rwd-example p {
+            color: #777;
+            line-height: 140%;
+        }
+
+        /* Stack all blocks to start */
+        .rwd-example .ui-block-a,
+        .rwd-example .ui-block-b,
+        .rwd-example .ui-block-c {
+            width: 100%;
+            float: none;
+            height: 800px;
+        }
+
+        .rwd-example .ui-block-a {
+            background: url("img/left.jpg") no-repeat left top;
+        }
+
+        .ui-block-b {
+            color: #987d6c;
+        }
+        /* Collapsing borders */
+        .rwd-example > div + div .ui-body {
+            border-top-width: 0;
+        }
+
+        /* 1st breakpoint - Float B and C, leave A full width on top */
+        @media all and (min-width: 42em) {
+            .rwd-example {
+                overflow: hidden; /* Use this or a "clearfix" to give the container height */
+            }
+
+                .rwd-example .ui-body {
+                    min-height: 14em;
+                }
+
+                .rwd-example .ui-block-b,
+                .rwd-example .ui-block-c {
+                    float: left;
+                    width: 49.95%;
+                }
+
+                    .rwd-example .ui-block-b p,
+                    .rwd-example .ui-block-c p {
+                        font-size: .8em;
+                    }
+
+                .rwd-example > div + div .ui-body {
+                    border-top-width: 1px;
+                }
+
+                .rwd-example > div:first-child .ui-body {
+                    border-bottom-width: 0;
+                }
+
+                .rwd-example > div:last-child .ui-body {
+                    border-left-width: 0;
+                }
+        }
+
+        /* 2nd breakpoint - Float all, 50/25/25 */
+        @media all and (min-width: 55em) {
+            .rwd-example .ui-body {
+                min-height: 18em;
+            }
+
+            .rwd-example .ui-block-a,
+            .rwd-example .ui-block-c {
+                float: left;
+                width: 49.95%;
+            }
+
+            .rwd-example .ui-block-b,
+            .rwd-example .ui-block-c {
+                float: left;
+                width: 24.925%;
+            }
+
+            .rwd-example > div:first-child .ui-body {
+                border-bottom-width: 1px;
+            }
+
+            .rwd-example > div + div .ui-body {
+                border-left-width: 0;
+            }
+        }
+
+        /* 3rd breakpoint - Bump up font size at very wide screens */
+        @media all and (min-width: 75em) {
+            .rwd-example .ui-body {
+                font-size: 125%;
+            }
+
+            .rwd-example .ui-block-a,
+            .rwd-example .ui-block-c {
+                float: left;
+                width: 49.95%;
+            }
+
+            .rwd-example .ui-block-a,
+            .rwd-example .ui-block-b {
+                float: left;
+                width: 24.925%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div data-role="page">
+        <div data-role="popup" id="popupDialog" data-dismissible="false" style="min-width:400px; max-width:600px;">
+
+            <div role="main" class="ui-content">
+                <h3 class="ui-title"></h3>
+                <p> </p>
+                <fieldset class="ui-grid-a">
+                    <div class="ui-block-a" style="height:500px"><div id="menutitle"></div></div>
+                    <div class="ui-block-b" style="height:500px">
+                        <h2>份数</h2>
+                        <a href="#" id="foodless" class="ui-btn">-</a>
+                        <input style="text-align:center;" type="text" name="foodnum" id="foodnum" value="1">
+                        <a href="#" id="foodmore" class="ui-btn">+</a>
+
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline " data-rel="back">放弃</a>
+                        <a id="btnbill" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline " data-rel="back" data-transition="flow">下单</a>
+                    </div>
+
+                </fieldset>
+
+            </div>
+        </div>
+
+        <div data-role="popup" id="popupCustomPizzaDialog" data-dismissible="false" style="min-width:800px; max-width:1000px;">
+
+            <div role="main" class="ui-content">
+                <h3 class="ui-title"></h3>
+                <p> </p>
+                <fieldset class="ui-grid-a">
+                    <div class="ui-block-a" style="width:300px;height:630px; background:url('img/ctmleft.jpg') no-repeat left top;"><div id="menutitle"></div></div>
+                    <div class="ui-block-b" style="height:630px">
+                        <h2>自制披萨</h2>
+
+
+                        饼胚 Pizza embryo
+                        <div class="ui-grid-a">
+                            <div class="ui-block-a">
+                                <div class="ui-bar ui-bar-a">
+
+                                    <input data-mini="true" type="checkbox" name="checkbox-v-2a" id="checkbox-v-2a">
+                                    <label for="checkbox-v-2a">5寸 </label>
+                                    <input type="checkbox" data-mini="true" name="checkbox-v-2b" id="checkbox-v-2b">
+                                    <label for="checkbox-v-2b">8寸</label>
+                                    <input data-mini="true" type="checkbox" name="checkbox-v-2c" id="checkbox-v-2c">
+                                    <label for="checkbox-v-2c">10寸</label>
+
+                                </div>
+                            </div>
+                            <div class="ui-block-b">
+                                <div class="ui-bar ui-bar-a">
+                                    <img style="width:60px;height:60px;" src="img/ctmb1.jpg">
+                                    <img style="width:60px;height:60px;" src="img/ctmb2.jpg">
+                                    <img style="width:60px;height:60px;" src="img/ctmb3.jpg">
+
+                                </div>
+                            </div>
+                        </div>
+                        主料
+                        <input data-mini="true" type="checkbox" name="checkbox-v-2d" id="checkbox-v-2d">
+                        <label for="checkbox-v-2d">披萨酱 <img style="width:60px;height:60px;" src="img/ctmz1.jpg"> </label>
+                        辅料
+                        <input data-mini="true" type="checkbox" name="checkbox-v-2e" id="checkbox-v-2e">
+                        <label for="checkbox-v-2e">蔬菜  <img style="width:60px;height:60px;" src="img/ctmf1.jpg"></label>
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline " data-rel="back">放弃</a>
+                        <a id="btnctmbill" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline " data-rel="back" data-transition="flow">下单</a>
+                    </div>
+
+
+
+            </div>
+        </div>
+
+        <div role="main" class="ui-content  ">
+
+            <!-- view source utilty wrapper -->
+            <div data-demo-html="true" data-demo-css="true">
+
+                <div class="rwd-example">
+
+                    <!-- Lead story block -->
+                    <div class="ui-block-a">
+                        <div class="ui-body ui-body-d">
+                            <div style="display:relative;margin-left:50px;margin-top:300px;color:white;font-size:40px">
+                                <h5>披萨</h5>
+                                <h5><a href="#popupCustomPizzaDialog" data-rel="popup" data-position-to="window" data-transition="pop" style="color:white;text-decoration:none;">自制披萨</a></h5>
+                                <h5><a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" style="color:white;text-decoration:none;">点单</a></h5>
+                                <h5><a href="list.html" data-position-to="window" data-transition="pop" style="color:white;text-decoration:none;">已点单</a></h5>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- secondary story block #1 -->
+                    <div class="ui-block-b">
+                        <div id="menutxt" class="ui-body ui-body-d ">
+                            <h2>好伦哥披萨1</h2>
+                            <h2>Origus Pizza</h2>
+                            <h5>配料 Ingredient</h5>
+                            <h5>美味披萨酱</h5>
+                            <h5>精选蔬菜</h5>
+                            <h5>秘制蜜豆</h5>
+                            <h5>尺寸Size 8寸</h5>
+
+                        </div>
+                    </div>
+
+                    <!-- secondary story block #2 -->
+                    <div class="ui-block-c">
+                        <div id="menuimg" class="ui-body ui-body-d">
+                            <img src="img/1.jpg">
+                        </div>
+                    </div>
+                    <div class="ui-nodisc-icon" style=" z-index:100; float:right;margin-right:0px; margin-bottom:50px; width:200px; ">
+                        <!-- Class added to the wrapper -->
+
+                        <a id="menupre" href="#" class="ui-btn ui-shadow  ui-corner-all  ui-icon-carat-l ui-btn-icon-notext ui-btn-b ui-btn-inline">上一道菜</a> &nbsp;&nbsp;&nbsp;
+                        <a id="menunext" href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-r ui-btn-icon-notext ui-btn-b ui-btn-inline">下一道菜</a>
+
+                    </div>
+                </div><!-- /rwd-example -->
+
+            </div><!-- /data-demo -->
+
+        </div><!-- /content -->
+
+    </div><!-- /page -->
+    <div style="display:none;">
+        <div id="p1">
+            <h2>好伦哥披萨1</h2>
+            <h2>Origus Pizza</h2>
+            <h5>配料 Ingredient</h5>
+            <h5>美味披萨酱</h5>
+            <h5>精选蔬菜</h5>
+            <h5>秘制蜜豆</h5>
+            <h5>尺寸Size 4寸</h5>
+        </div>
+        <div id="p2">
+            <h2>好伦哥披萨2</h2>
+            <h2>Origus Pizza</h2>
+            <h5>配料 Ingredient</h5>
+            <h5>美味披萨酱</h5>
+            <h5>精选蔬菜2</h5>
+            <h5>秘制蜜豆</h5>
+            <h5>尺寸Size 8寸</h5>
+        </div>
+        <div id="p3">
+            <h2>好伦哥披萨3</h2>
+            <h2>Origus Pizza</h2>
+            <h5>配料 Ingredient</h5>
+            <h5>美味披萨酱3</h5>
+            <h5>精选蔬菜</h5>
+            <h5>秘制蜜豆</h5>
+            <h5>尺寸Size 8寸</h5>
+        </div>
+        <div id="p4">
+            <h2>好伦哥披萨4</h2>
+            <h2>Origus Pizza</h2>
+            <h5>配料 Ingredient</h5>
+            <h5>美味披萨酱</h5>
+            <h5>精选蔬菜4</h5>
+            <h5>秘制蜜豆</h5>
+            <h5>尺寸Size 5寸</h5>
+        </div>
+        <div id="img1">
+            <img src="img/1.jpg">
+        </div>
+        <div id="img2">
+            <img src="img/2.jpg">
+        </div>
+        <div id="img3">
+            <img src="img/3.jpg">
+        </div>
+        <div id="img4">
+            <img src="img/4.jpg">
+        </div>
+    </div>
+
+    <script>
+        var maxpid = 4;
+        var pid = 1;
+        var foodnum = 1;
+
+        var showmenu = function () {
+
+            foodnum = 1;
+            showfoodnum();
+
+            $("#menutxt").html($("#p" + pid).html());
+            $("#menuimg").html($("#img" + pid).html());
+            $("#menutitle").html($("#p" + pid + "> :first-child").text());
+        };
+        var showfoodnum = function () {
+
+            $("#foodnum").val(foodnum);
+        };
+
+        var fpre = function () {
+
+            if (pid > 1) {
+                pid--;
+                showmenu();
+            }
+        };
+        var fnext = function () {
+            if (pid < maxpid) {
+                pid++;
+                showmenu();
+            };
+
+        };
+
+        $(function () {
+
+            showmenu();
+            $("#btnctmbill").bind("tap", function () {
+
+                var status = $('input[type="checkbox"]').map(function () {
+                    return $(this).is(':checked') ? 1 : 0;
+
+                });
+                var s = [];
+                s = $.map(status, function (s) { return s; });
+                //todo: ajax save server.
+                alert(s.join(","));
+            });
+            $("#btnbill").bind("tap", function () {
+                //todo: ajax save server.
+                alert($("#menutitle").html() + " 订餐 " + foodnum + "份");
+            });
+
+            $("#foodless").bind("tap", function () {
+                if (foodnum > 1) {
+                    foodnum--;
+                    showfoodnum();
+                }
+            });
+
+            $("#foodmore").bind("tap", function () {
+                foodnum++;
+                showfoodnum();
+            });
+
+            $("#menupre").bind("tap", function () {
+
+                fpre();
+            });
+            $("#menunext").bind("tap", function () {
+
+                fnext();
+            });
+            $("body").bind("swiperight", function () {
+
+                fpre();
+            });
+            $("body").bind("swipeleft", function () {
+
+
+                fnext();
+            });
+        });
+    </script>
+</body>
+</html>

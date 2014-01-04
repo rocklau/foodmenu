@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>菜谱</title>
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+</head>
+<body>
+        <div data-role="page">
+
+            <table data-role="table" id="table-column-toggle" data-mode="columntoggle"  data-column-btn-text="列" class="ui-responsive table-stroke">
+     <thead>
+       <tr>
+         <th data-priority="2">Rank</th>
+         <th>菜名</th>
+         <th data-priority="3">菜类</th>
+         <th data-priority="1"><abbr title="价格">单价</abbr></th>
+         <th data-priority="5">数量</th>
+          <th data-priority="5">合计</th>
+           <th data-priority="5">操作</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <th>1</th>
+         <td>大披萨</td>
+         <td>自助披萨</td>
+         <td>42</td>
+         <td>1</td>
+          <td>42</td>
+           <td><button class="ui-btn">删除</button></td>
+       </tr>
+
+     </tbody>
+   </table>
+        </div>
+  
+</body>
+</html>
